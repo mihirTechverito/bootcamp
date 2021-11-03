@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class WalletTest {
 
     //    As a user
-//    I want to add money to my wallet
-//    So that I can keep it ready for purchases
+    //    I want to add money to my wallet
+    //    So that I can keep it ready for purchases
     @Test
     void add1INRToEmptyWalletTotalBalanceBecomes1INR() {
         Wallet wallet = new Wallet(INR);
@@ -58,5 +58,26 @@ public class WalletTest {
 
         double walletBalance = wallet.balance();
         assertEquals(150, walletBalance);
+    }
+
+    @Test
+    void add70INRToEmptyUSDWalletTotalBalanceBecomes1USD() {
+        Wallet wallet = new Wallet(USD);
+
+        wallet.credit(70, INR);
+
+        double walletBalance = wallet.balance();
+        assertEquals(1, walletBalance);
+    }
+
+    @Test
+    void add210INRToUSDWalletWith1USDTotalBalanceBecomes4USD() {
+        Wallet wallet = new Wallet(USD);
+
+        wallet.credit(1, USD);
+        wallet.credit(210, INR);
+
+        double walletBalance = wallet.balance();
+        assertEquals(4, walletBalance);
     }
 }
