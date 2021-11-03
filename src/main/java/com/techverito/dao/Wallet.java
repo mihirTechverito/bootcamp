@@ -10,6 +10,7 @@ public class Wallet {
     private final Converter USD_INR = amount -> amount * 70;
     private final Converter INR_USD = amount -> amount / 70;
     private final Converter INR_GBP = amount -> amount / 140;
+    private final Converter GBP_INR = amount -> amount * 140;
 
     private final Currency currency;
     private double balance;
@@ -28,7 +29,7 @@ public class Wallet {
             return;
         }
         if (currency.equals(GBP)) {
-            this.balance = 140;
+            this.balance += GBP_INR.convert(amount);
             return;
         }
         double convertedAmt = this.currency.equals(INR)
