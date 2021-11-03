@@ -14,7 +14,7 @@ public class BuyAndGetMore implements Offer {
   public int applyOffer(int quantity, int price) {
     int countAfterOfferApplied = offerOnQuantity + offerOfQuantity;
 
-    return (price * offerOnQuantity* (quantity / countAfterOfferApplied))
+    return (price * offerOnQuantity * (quantity / countAfterOfferApplied))
         + (quantity % countAfterOfferApplied * price);
   }
 }
