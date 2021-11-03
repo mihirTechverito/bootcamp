@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static com.techverito.util.Currency.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WalletTest {
+class WalletTest {
 
     //    As a user
     //    I want to add money to my wallet
@@ -21,7 +21,7 @@ public class WalletTest {
     }
 
     @Test
-    void walletWithExistingBalance1INRWhenAdded2INRBalanceShouldBe3INR() {
+    void add_2_INRtoWalletHaving_1_INRbalanceBecomes_3_INR() {
         Wallet wallet = new Wallet(INR);
         wallet.credit(1, INR);
         wallet.credit(2, INR);
@@ -31,7 +31,7 @@ public class WalletTest {
     }
 
     @Test
-    void add1USDToEmptyUSDWalletTotalBalanceBecomes1USD() {
+    void add_1_USDToEmptyUSDWalletTotalBalanceBecomes_1_USD() {
         Wallet wallet = new Wallet(USD);
         wallet.credit(1, USD);
 
@@ -40,7 +40,7 @@ public class WalletTest {
     }
 
     @Test
-    void add1USDToEmptyINRWalletTotalBalanceBecomes70INR() {
+    void add_1_USDToEmptyINRWalletTotalBalanceBecomes_70_INR() {
         Wallet wallet = new Wallet(INR);
         wallet.credit(1, USD);
 
@@ -49,7 +49,7 @@ public class WalletTest {
     }
 
     @Test
-    void add2USDToINRWalletWith10INRTotalBalanceBecomes150INR() {
+    void add_2_USDToINRWalletWith10INRTotalBalanceBecomes_150_INR() {
         Wallet wallet = new Wallet(INR);
 
         wallet.credit(10, INR);
@@ -60,7 +60,7 @@ public class WalletTest {
     }
 
     @Test
-    void add70INRToEmptyUSDWalletTotalBalanceBecomes1USD() {
+    void add_70_INRToEmptyUSDWalletTotalBalanceBecomes_1_USD() {
         Wallet wallet = new Wallet(USD);
 
         wallet.credit(70, INR);
@@ -70,7 +70,7 @@ public class WalletTest {
     }
 
     @Test
-    void add210INRToUSDWalletWith1USDTotalBalanceBecomes4USD() {
+    void add_210_INRToUSDWalletWith_1_USDTotalBalanceBecomes_4_USD() {
         Wallet wallet = new Wallet(USD);
 
         wallet.credit(1, USD);
@@ -97,7 +97,7 @@ public class WalletTest {
     }
 
     @Test
-    void add140INRTwiceToEmptyGBPWalletTotalBalanceBecomes2GBP() {
+    void add_140_INRTwiceToEmptyGBPWalletTotalBalanceBecomes_2_GBP() {
         Wallet wallet = new Wallet(GBP);
         wallet.credit(140,INR);
         wallet.credit(140,INR);
@@ -106,7 +106,7 @@ public class WalletTest {
     }
 
     @Test
-    void add1GBPToEmptyINRWalletTotalBalanceBecomes140INR() {
+    void add_1_GBPToEmptyINRWalletTotalBalanceBecomes_140_INR() {
         Wallet wallet = new Wallet(INR);
         wallet.credit(1,GBP);
         double walletBalance = wallet.balance();
@@ -114,7 +114,7 @@ public class WalletTest {
     }
 
     @Test
-    void add1GBPTwiceToINRWalletTotalBalanceBecomes280INR() {
+    void add_1_GBPTwiceToINRWalletTotalBalanceBecomes_280_INR() {
         Wallet wallet = new Wallet(INR);
         wallet.credit(1,GBP);
         wallet.credit(1,GBP);

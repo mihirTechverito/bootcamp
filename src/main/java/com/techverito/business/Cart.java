@@ -13,9 +13,6 @@ public class Cart {
 
     private final List<CartItem> cartItems = new ArrayList<>();
 
-    public Cart() {
-    }
-
     public void addItem(CartItem cartItem) {
         this.cartItems.add(cartItem);
     }
