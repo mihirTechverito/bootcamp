@@ -87,4 +87,21 @@ public class WalletTest {
         double walletBalance = wallet.balance();
         assertEquals(1,walletBalance);
     }
+
+    @Test
+    void add_280_INRtoEmptyGBPWalletTotalBalance_2_GBP() {
+        Wallet wallet = new Wallet(GBP);
+        wallet.credit(280,INR);
+        double walletBalance = wallet.balance();
+        assertEquals(2,walletBalance);
+    }
+
+    @Test
+    void add140INRTwiceToEmptyGBPWalletTotalBalanceBecomes2GBP() {
+        Wallet wallet = new Wallet(GBP);
+        wallet.credit(140,INR);
+        wallet.credit(140,INR);
+        double walletBalance = wallet.balance();
+        assertEquals(2,walletBalance);
+    }
 }
