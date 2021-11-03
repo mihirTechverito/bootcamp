@@ -3,8 +3,7 @@ package com.techverito;
 import com.techverito.dao.Wallet;
 import org.junit.jupiter.api.Test;
 
-import static com.techverito.util.Currency.INR;
-import static com.techverito.util.Currency.USD;
+import static com.techverito.util.Currency.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WalletTest {
@@ -79,5 +78,13 @@ public class WalletTest {
 
         double walletBalance = wallet.balance();
         assertEquals(4, walletBalance);
+    }
+
+    @Test
+    void add_140_INRtoEmptyGBPWalletTotalBalance_1_GBP() {
+        Wallet wallet = new Wallet(GBP);
+        wallet.credit(140,INR);
+        double walletBalance = wallet.balance();
+        assertEquals(1,walletBalance);
     }
 }

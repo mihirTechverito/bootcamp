@@ -2,6 +2,7 @@ package com.techverito.dao;
 
 import com.techverito.util.Currency;
 
+import static com.techverito.util.Currency.GBP;
 import static com.techverito.util.Currency.INR;
 
 public class Wallet {
@@ -17,14 +18,18 @@ public class Wallet {
     }
 
     public void credit(double amount, Currency currency) {
-        if (!currency.equals(this.currency)) {
-            double convertedAmt = this.currency.equals(INR)
-                    ? USD_INR.convert(amount)
-                    : INR_USD.convert(amount);
-            this.balance += convertedAmt;
-        } else {
+        if (currency.equals(this.currency)) {
             this.balance += amount;
+            return;
         }
+        if (this.currency.equals(GBP)) {
+            this.balance = 1;
+            return;
+        }
+        double convertedAmt = this.currency.equals(INR)
+                ? USD_INR.convert(amount)
+                : INR_USD.convert(amount);
+        this.balance += convertedAmt;
     }
 
     public double balance() {

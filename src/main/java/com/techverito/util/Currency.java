@@ -1,3 +1,3 @@
 package com.techverito.util;
 
-public enum Currency {USD, INR}
+public enum Currency {USD, INR, GBP}
