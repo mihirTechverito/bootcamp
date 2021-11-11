@@ -6,13 +6,29 @@ import com.techverito.dao.BuyAndGetMore;
 import com.techverito.dao.InventoryProduct;
 import com.techverito.exception.ProductNotFoundInCartException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+//@ExtendWith(MockitoExtension.class)
 class CartTest {
+
+    @Test
+    void oneMockAppleAddedToCartPriceBecomesTen() {
+        InventoryProduct mockProduct = mock(InventoryProduct.class);
+        when(mockProduct.offerPrice(1)).thenReturn(10);
+        CartItem cartItemApple = new CartItem(mockProduct, 1);
+        Cart cart = new Cart();
+        cart.addItem(cartItemApple);
+        assertEquals(10, cart.totalPrice());
+    }
 
     @Test
     void oneAppleAddedToCartPriceBecomesTen() {

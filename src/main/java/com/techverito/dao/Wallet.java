@@ -1,21 +1,23 @@
 package com.techverito.dao;
 
+import com.techverito.service.Event;
+import com.techverito.service.EventStore;
 import com.techverito.util.Currency;
 
 public class Wallet {
 
-  private final Currency currency;
-  private double balance;
+  private Money money;
 
   public Wallet(Currency currency) {
-    this.currency = currency;
+    this.money = new Money(0, currency);
   }
 
-  public double balance() {
-    return this.balance;
+  public Money balance() {
+    return this.money;
   }
 
-  public void credit(double creditAmount, Currency creditCurrency) {
-    this.balance += (creditAmount * creditCurrency.conversionValue) / this.currency.conversionValue;
+  public void credit(Money money) {
+    this.money = this.money.add(money);
+    EventStore.getInstance().publishEvent(Event.CREDIT, money);
   }
 }
