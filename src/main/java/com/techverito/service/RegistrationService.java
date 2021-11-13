@@ -14,7 +14,7 @@ public class RegistrationService {
   public void register(User newUser) {
 
     this.notifierFactory
-        .getNotifier(newUser.preferedCommunication())
+        .getNotifier(newUser.preferredCommunication())
         .sendNotification(newUser.contact(), "Thank you for registration");
   }
 }

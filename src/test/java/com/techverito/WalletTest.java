@@ -33,7 +33,7 @@ class WalletTest {
   }
 
   @Test
-  void add_2_INRtoWalletHaving_1_INRbalanceBecomes_3_INR() {
+  void add_2_INRtoWalletHaving_1INR_balanceBecomes_3_INR() {
     Wallet wallet = new Wallet(INR);
     wallet.credit(new Money(1, INR));
     wallet.credit(new Money(2, INR));

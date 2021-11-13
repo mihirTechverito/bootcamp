@@ -10,7 +10,7 @@ public class CheckOutSubscriber implements Subscriber {
     NotifierFactory notifierFactory = new NotifierFactory();
     User user = (User) eventData.data();
     notifierFactory
-        .getNotifier(user.preferedCommunication())
+        .getNotifier(user.preferredCommunication())
         .sendNotification(user.contact(), "Order placed");
   }
 }

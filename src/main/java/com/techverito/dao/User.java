@@ -20,7 +20,7 @@ public class User {
     }
   }
 
-  public PreferredCommunication preferedCommunication() {
+  public PreferredCommunication preferredCommunication() {
     return preferredCommunication;
   }
 }

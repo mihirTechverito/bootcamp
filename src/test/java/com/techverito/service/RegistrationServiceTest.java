@@ -82,7 +82,6 @@ class RegistrationServiceTest {
 
     registrationService.register(user);
 
-    verify(smsNotifier, times(1))
-        .sendNotification("1234567890", "Thank you for registration");
+    verify(smsNotifier, times(1)).sendNotification("1234567890", "Thank you for registration");
   }
 }

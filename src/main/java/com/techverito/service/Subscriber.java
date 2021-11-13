@@ -1,6 +1,5 @@
 package com.techverito.service;
 
-import com.techverito.dao.Money;
 
 public interface Subscriber {
 
