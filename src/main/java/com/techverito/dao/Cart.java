@@ -1,12 +1,13 @@
-package com.techverito.business;
+package com.techverito.dao;
 
-import com.techverito.dao.Money;
-import com.techverito.dao.User;
+import com.techverito.business.CartItem;
+import com.techverito.business.CheckoutData;
+import com.techverito.business.PaymentMethod;
+import com.techverito.business.Money;
 import com.techverito.exception.ProductNotFoundInCartException;
 import com.techverito.service.Event;
 import com.techverito.service.EventData;
 import com.techverito.service.EventStore;
-import com.techverito.service.NotifierFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,7 +54,8 @@ public class Cart {
     Money checkoutMoney = new Money(totalPrice(), INR);
     if (paymentOption.charge(checkoutMoney)){
       cartItems.clear();
-      EventStore.getInstance().publishEvent(Event.CHECKOUT, new EventData<>(this.user));
+      CheckoutData checkoutData = new CheckoutData(this.user,checkoutMoney);
+      EventStore.getInstance().publishEvent(Event.CHECKOUT, new EventData<>(checkoutData));
     }
   }
 

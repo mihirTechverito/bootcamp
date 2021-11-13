@@ -1,6 +1,8 @@
 package com.techverito;
 
-import com.techverito.business.Cart;
+import com.techverito.business.CheckoutData;
+import com.techverito.business.Money;
+import com.techverito.dao.Cart;
 import com.techverito.business.CartItem;
 import com.techverito.business.PaymentMethod;
 import com.techverito.dao.*;
@@ -237,7 +239,7 @@ class CartTest {
   }
 
   @Test
-  void sendSMSNotificationPostSuccessfulCheckout() {
+  void sendSMSNotificationToUserPostSuccessfulCheckout() {
     // Arrange
     PaymentMethod paymentMethod = mock(PaymentMethod.class);
     when(paymentMethod.charge(any())).thenReturn(true);
@@ -248,13 +250,15 @@ class CartTest {
     Cart cart = new Cart(user);
     cart.addItem(cartItemApple);
     EventStore eventStore = EventStore.getInstance();
-    SubscriberStub checkoutSubscriberStub = new SubscriberStub(eventStore, Event.CHECKOUT);
+    SubscriberStub userCheckoutSubscriberStub = new SubscriberStub(eventStore, Event.CHECKOUT);
 
     // Act
     cart.checkout(paymentMethod);
 
     //Assert
-    assertEquals(user, checkoutSubscriberStub.eventData().data());
+    CheckoutData data = (CheckoutData) userCheckoutSubscriberStub.eventData().data();
+    assertEquals(user, data.user());
+    assertEquals(new Money(10,INR), data.spent());
   }
 
 

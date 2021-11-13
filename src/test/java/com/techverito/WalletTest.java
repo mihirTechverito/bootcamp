@@ -1,6 +1,6 @@
 package com.techverito;
 
-import com.techverito.dao.Money;
+import com.techverito.business.Money;
 import com.techverito.dao.Wallet;
 import com.techverito.exception.BalanceInsufficientException;
 import com.techverito.service.Event;

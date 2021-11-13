@@ -1,4 +1,4 @@
-package com.techverito.dao;
+package com.techverito.business;
 
 import com.techverito.util.Currency;
 
@@ -13,7 +13,7 @@ public class Money implements Comparable<Money> {
     this.currency = currency;
   }
 
-  Money add(Money creditMoney) {
+  public Money add(Money creditMoney) {
     double totalAmount =
         this.amount + currency.convertFrom(creditMoney.amount, creditMoney.currency);
     return new Money(totalAmount, currency);
