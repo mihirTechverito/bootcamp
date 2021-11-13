@@ -3,8 +3,6 @@ package com.techverito;
 import com.techverito.dao.Money;
 import com.techverito.dao.Wallet;
 import com.techverito.exception.BalanceInsufficientException;
-import com.techverito.service.EventData;
-import com.techverito.service.Subscriber;
 import com.techverito.service.Event;
 import com.techverito.service.EventStore;
 import com.techverito.stubs.SubscriberStub;
