@@ -7,20 +7,33 @@ import static org.junit.jupiter.api.Assertions.*;
 class ParkingLotTest {
 
   @Test
-  void parkCarInEmptySpace() {
+  void parkingShouldBeSuccessfulWhenAllSpotsAreAvailable() {
 
-      ParkingLot parkingLot = new ParkingLot(2);
-      parkingLot.createSpots();
+      ParkingLot parkingLot = new ParkingLot(1);
       boolean isParked = parkingLot.park();
       assertTrue(isParked);
   }
 
     @Test
-    void parkCarWhenNoSpaceEmpty() {
+    void parking_2cars_ShouldBeSuccessfulWhen_2_SpotsAreAvailable() {
+
+        ParkingLot parkingLot = new ParkingLot(2);
+        parkingLot.park();
+        boolean isParked2 = parkingLot.park();
+
+        assertTrue(isParked2);
+    }
+
+    @Test
+    void parkingShouldFailWhenAllSpotAreOccupied() {
 
         ParkingLot parkingLot = new ParkingLot(1);
-        parkingLot.createSpots();
         parkingLot.park();
-        assertThrows(ParkingFullException.class, parkingLot::park);
+        assertFalse(parkingLot.park());
     }
+
+  @Test
+  void notifyWhenParkingLotInFull() {
+
+  }
 }
