@@ -15,21 +15,21 @@ import static org.mockito.Mockito.when;
 
 class CheckOutSubscriberTest {
 
-  @Test
-  void smsNotificationToBeSentPostCheckout() {
+    @Test
+    void smsNotificationToBeSentPostCheckout() {
 
-    NotifierFactory notifierFactory = mock(NotifierFactory.class);
-    UserCheckOutSubscriber userCheckOutSubscriber = new UserCheckOutSubscriber(notifierFactory);
-    NotifierStub smsNotifier = new NotifierStub();
-    when(notifierFactory.getNotifier(any())).thenReturn(smsNotifier);
-    EventData eventData = mock(EventData.class);
-    CheckoutData checkoutData =
-        new CheckoutData(new User("12", "ABC", PreferredCommunication.SMS), new Money(1, INR));
-    when(eventData.data())
-        .thenReturn(checkoutData);
+        NotifierFactory notifierFactory = mock(NotifierFactory.class);
+        UserCheckOutSubscriber userCheckOutSubscriber = new UserCheckOutSubscriber(notifierFactory);
+        NotifierStub smsNotifier = new NotifierStub();
+        when(notifierFactory.getNotifier(any())).thenReturn(smsNotifier);
+        EventData eventData = mock(EventData.class);
+        CheckoutData checkoutData =
+                new CheckoutData(new User("12", "ABC", PreferredCommunication.SMS), new Money(1, INR));
+        when(eventData.data())
+                .thenReturn(checkoutData);
 
-    userCheckOutSubscriber.notifyEvent(eventData);
+        userCheckOutSubscriber.notifyEvent(eventData);
 
-    assertTrue(smsNotifier.hasReceivedMessage("Checkout successful"));
-  }
+        assertTrue(smsNotifier.hasReceivedMessage("Checkout successful"));
+    }
 }

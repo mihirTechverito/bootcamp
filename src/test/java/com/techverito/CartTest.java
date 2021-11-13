@@ -254,11 +254,31 @@ class CartTest {
 
     // Act
     cart.checkout(paymentMethod);
-
-    //Assert
     CheckoutData data = (CheckoutData) userCheckoutSubscriberStub.eventData().data();
+    //Assert
     assertEquals(user, data.user());
-    assertEquals(new Money(10,INR), data.spent());
+  }
+
+  @Test
+  void sendSMSNotificationToAccountStaffPostSuccessfulCheckout() {
+    // Arrange
+    PaymentMethod paymentMethod = mock(PaymentMethod.class);
+    when(paymentMethod.charge(any())).thenReturn(true);
+    InventoryProduct apple = new InventoryProduct(10);
+    CartItem cartItemApple = new CartItem(apple, 1);
+
+    User user = new User("123", "abc", PreferredCommunication.SMS);
+    Cart cart = new Cart(user);
+    cart.addItem(cartItemApple);
+    EventStore eventStore = EventStore.getInstance();
+    SubscriberStub accountStaffStub = new SubscriberStub(eventStore, Event.CHECKOUT);
+
+    // Act
+    cart.checkout(paymentMethod);
+    CheckoutData dataAccountStaff = (CheckoutData) accountStaffStub.eventData().data();
+    //Assert
+    assertEquals(user, dataAccountStaff.user());
+    assertEquals(new Money(10,INR), dataAccountStaff.spent());
   }
 
 
