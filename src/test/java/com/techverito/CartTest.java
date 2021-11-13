@@ -9,7 +9,8 @@ import com.techverito.dao.*;
 import com.techverito.exception.ProductNotFoundInCartException;
 import com.techverito.service.Event;
 import com.techverito.service.EventStore;
-import com.techverito.stubs.SubscriberStub;
+import com.techverito.stubs.CheckoutSubscriberStub;
+import com.techverito.stubs.CreditEventSubscriberStub;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -250,11 +251,11 @@ class CartTest {
     Cart cart = new Cart(user);
     cart.addItem(cartItemApple);
     EventStore eventStore = EventStore.getInstance();
-    SubscriberStub userCheckoutSubscriberStub = new SubscriberStub(eventStore, Event.CHECKOUT);
+    CheckoutSubscriberStub subscriberStub = new CheckoutSubscriberStub(eventStore, Event.CHECKOUT);
 
     // Act
     cart.checkout(paymentMethod);
-    CheckoutData data = (CheckoutData) userCheckoutSubscriberStub.eventData().data();
+    CheckoutData data = subscriberStub.eventData();
     //Assert
     assertEquals(user, data.user());
   }
@@ -271,7 +272,7 @@ class CartTest {
     Cart cart = new Cart(user);
     cart.addItem(cartItemApple);
     EventStore eventStore = EventStore.getInstance();
-    SubscriberStub accountStaffStub = new SubscriberStub(eventStore, Event.CHECKOUT);
+    CreditEventSubscriberStub accountStaffStub = new CreditEventSubscriberStub(eventStore, Event.CHECKOUT);
 
     // Act
     cart.checkout(paymentMethod);

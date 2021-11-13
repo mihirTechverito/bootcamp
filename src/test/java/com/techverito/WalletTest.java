@@ -5,7 +5,7 @@ import com.techverito.dao.Wallet;
 import com.techverito.exception.BalanceInsufficientException;
 import com.techverito.service.Event;
 import com.techverito.service.EventStore;
-import com.techverito.stubs.SubscriberStub;
+import com.techverito.stubs.CreditEventSubscriberStub;
 import org.junit.jupiter.api.Test;
 
 import static com.techverito.util.Currency.*;
@@ -145,8 +145,8 @@ class WalletTest {
     EventStore eventStore = EventStore.getInstance();
     Wallet wallet = new Wallet(INR);
     Money money = new Money(2, INR);
-    SubscriberStub auditorStub = new SubscriberStub(eventStore, Event.CREDIT);
-    SubscriberStub accountStub = new SubscriberStub(eventStore, Event.CREDIT);
+    CreditEventSubscriberStub auditorStub = new CreditEventSubscriberStub(eventStore, Event.CREDIT);
+    CreditEventSubscriberStub accountStub = new CreditEventSubscriberStub(eventStore, Event.CREDIT);
     wallet.credit(money);
 
 

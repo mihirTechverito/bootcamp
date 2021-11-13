@@ -19,6 +19,8 @@ public class EventStore {
   public void publishEvent(Event event, EventData<?> eventData) {
     List<Subscriber> subs = subscribersMap.get(event);
     if (subs != null) subs.forEach(s -> s.notifyEvent(eventData));
+    if (subs != null) subs.forEach(s -> s.notifyEventV2(eventData.data()));
+
   }
 
   public void subscribe(Event event, Subscriber subscriber) {
