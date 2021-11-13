@@ -19,9 +19,13 @@ public class Money implements Comparable<Money> {
     return new Money(totalAmount, currency);
   }
 
-  public Money deduct(Money debitMoney) {
-    double totalAmount = this.amount - currency.convertFrom(debitMoney.amount, debitMoney.currency);
-    return new Money(totalAmount, currency);
+  public Money deduct(Money debitMoney) throws Exception {
+    if (this.compareTo(debitMoney) >= 0) {
+      double totalAmount =
+          this.amount - currency.convertFrom(debitMoney.amount, debitMoney.currency);
+      return new Money(totalAmount, currency);
+    }
+    throw new Exception("incorrect amount");
   }
 
   @Override

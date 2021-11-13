@@ -2,19 +2,18 @@ package com.techverito;
 
 import com.techverito.business.Cart;
 import com.techverito.business.CartItem;
-import com.techverito.business.PaymentOption;
-import com.techverito.dao.BuyAndGetMore;
-import com.techverito.dao.InventoryProduct;
-import com.techverito.dao.Money;
-import com.techverito.dao.Wallet;
+import com.techverito.business.PaymentMethod;
+import com.techverito.dao.*;
 import com.techverito.exception.ProductNotFoundInCartException;
+import com.techverito.service.Event;
+import com.techverito.service.EventStore;
+import com.techverito.stubs.SubscriberStub;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static com.techverito.util.Currency.INR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 // @ExtendWith(MockitoExtension.class)
@@ -25,7 +24,7 @@ class CartTest {
     InventoryProduct mockProduct = mock(InventoryProduct.class);
     when(mockProduct.offerPrice(1)).thenReturn(10);
     CartItem cartItemApple = new CartItem(mockProduct, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
     assertEquals(10, cart.totalPrice());
   }
@@ -34,7 +33,7 @@ class CartTest {
   void oneAppleAddedToCartPriceBecomesTen() {
     InventoryProduct apple = new InventoryProduct(10);
     CartItem cartItemApple = new CartItem(apple, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
     assertEquals(10, cart.totalPrice());
   }
@@ -43,7 +42,7 @@ class CartTest {
   void twoOrangesAddedToCartPriceBecomesForty() {
     InventoryProduct orange = new InventoryProduct(20);
     CartItem cartItemOranges = new CartItem(orange, 2);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemOranges);
     assertEquals(40, cart.totalPrice());
   }
@@ -54,7 +53,7 @@ class CartTest {
     BuyAndGetMore buyAndGetMore = new BuyAndGetMore(1, 1);
     orange.activateOffer(buyAndGetMore);
     CartItem cartItemOranges = new CartItem(orange, 2);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemOranges);
 
     assertEquals(20, cart.totalPrice());
@@ -66,7 +65,7 @@ class CartTest {
     BuyAndGetMore buyAndGetMore = new BuyAndGetMore(2, 3);
     orange.activateOffer(buyAndGetMore);
     CartItem cartItemOranges = new CartItem(orange, 5);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemOranges);
 
     assertEquals(40, cart.totalPrice());
@@ -78,7 +77,7 @@ class CartTest {
     BuyAndGetMore buyAndGetMore = new BuyAndGetMore(2, 3);
     orange.activateOffer(buyAndGetMore);
     CartItem cartItemOranges = new CartItem(orange, 11);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemOranges);
 
     assertEquals(100, cart.totalPrice());
@@ -91,7 +90,7 @@ class CartTest {
   void givenOneAppleInCartWhenDeletedFromCartTotalPriceShouldBeZero() {
     InventoryProduct apple = new InventoryProduct(10);
     CartItem cartItemApple = new CartItem(apple, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
     cart.delete(cartItemApple);
 
@@ -105,7 +104,7 @@ class CartTest {
     CartItem cartItemApple = new CartItem(apple, 1);
     CartItem cartItemOrange = new CartItem(orange, 1);
 
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
     cart.addItem(cartItemOrange);
     cart.delete(cartItemApple);
@@ -120,7 +119,7 @@ class CartTest {
     CartItem cartItemApple = new CartItem(apple, 1);
     CartItem cartItemOrange = new CartItem(orange, 1);
 
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
 
     ProductNotFoundInCartException exception =
@@ -134,7 +133,7 @@ class CartTest {
     InventoryProduct apple = new InventoryProduct(10);
     CartItem cartItemApple = new CartItem(apple, 1);
 
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
 
     ProductNotFoundInCartException exception =
         assertThrows(ProductNotFoundInCartException.class, () -> cart.delete(cartItemApple));
@@ -153,7 +152,7 @@ class CartTest {
     CartItem cartItemApple = new CartItem(apple, 1);
     CartItem cartItemOrange = new CartItem(orange, 1);
     CartItem cartItemGrapes = new CartItem(grapes, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
 
     cart.addItem(cartItemApple);
     cart.addItem(cartItemOrange);
@@ -172,7 +171,7 @@ class CartTest {
     CartItem cartItemApple = new CartItem(apple, 1);
     CartItem cartItemOrange = new CartItem(orange, 1);
     CartItem cartItemGrapes = new CartItem(grapes, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
 
     cart.addItem(cartItemApple);
     cart.addItem(cartItemOrange);
@@ -185,11 +184,11 @@ class CartTest {
   @Test
   void cartWillBeEmptyAfterCheckoutWithWallet() {
 
-    Wallet wallet = spy(new Wallet(INR));
+    Wallet wallet = new Wallet(INR);
     wallet.credit(new Money(10, INR));
     InventoryProduct apple = new InventoryProduct(10);
     CartItem cartItemApple = new CartItem(apple, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
 
     cart.checkout(wallet);
@@ -199,34 +198,64 @@ class CartTest {
 
   @Test
   void moneyWillDebitedFromWalletWhenCartCheckoutWithWallet() {
-    Wallet wallet = spy(new Wallet(INR));
-    wallet.credit(new Money(10, INR));
+    PaymentMethod wallet = mock(PaymentMethod.class);
     InventoryProduct apple = new InventoryProduct(10);
     CartItem cartItemApple = new CartItem(apple, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
 
     cart.checkout(wallet);
 
-    verify(wallet, times(1)).debit(new Money(10, INR));
+    verify(wallet, times(1)).charge(new Money(10, INR));
   }
 
   @Test
-  void cartWillBeEmptyAfterCheckoutWithCreditCard() {
-    PaymentStub creditCardStub = spy(new PaymentStub());
+  void cartWillBeEmptyAfterCheckoutWithCreditCard() { // This is a crime
+    PaymentOptionStub creditCardStub = new PaymentOptionStub();
     InventoryProduct apple = new InventoryProduct(10);
     CartItem cartItemApple = new CartItem(apple, 1);
-    Cart cart = new Cart();
+    Cart cart = new Cart(null);
     cart.addItem(cartItemApple);
     cart.checkout(creditCardStub);
-    verify(creditCardStub, times(1)).debit(new Money(10, INR));
+
+    assertEquals(new Money(10, INR), creditCardStub.money());
   }
 
-  class PaymentStub implements PaymentOption {
+  class PaymentOptionStub implements PaymentMethod {
+
+    private Money money;
+
+    public Money money() {
+      return money;
+    }
 
     @Override
-    public boolean debit(Money money) {
+    public boolean charge(Money money) {
+      this.money = money;
       return true;
     }
   }
+
+  @Test
+  void sendSMSNotificationPostSuccessfulCheckout() {
+    // Arrange
+    PaymentMethod paymentMethod = mock(PaymentMethod.class);
+    when(paymentMethod.charge(any())).thenReturn(true);
+    InventoryProduct apple = new InventoryProduct(10);
+    CartItem cartItemApple = new CartItem(apple, 1);
+
+    User user = new User("123", "abc", PreferredCommunication.SMS);
+    Cart cart = new Cart(user);
+    cart.addItem(cartItemApple);
+    EventStore eventStore = EventStore.getInstance();
+    SubscriberStub checkoutSubscriberStub = new SubscriberStub(eventStore, Event.CHECKOUT);
+
+    // Act
+    cart.checkout(paymentMethod);
+
+    //Assert
+    assertEquals(user, checkoutSubscriberStub.eventData().data());
+  }
+
+
 }

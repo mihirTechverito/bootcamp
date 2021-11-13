@@ -2,6 +2,7 @@ package com.techverito.service;
 
 import com.techverito.dao.PreferredCommunication;
 import com.techverito.dao.User;
+import com.techverito.stubs.NotifierStub;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,25 +49,6 @@ class RegistrationServiceTest {
     // Assert - Then
     Assertions.assertTrue(emailNotifier.hasReceivedMessage("Thank you for registration"));
     Assertions.assertTrue(emailNotifier.hasRecipient("john@example.com"));
-  }
-
-  private class NotifierStub implements Notifier {
-    private String recipient;
-    private String message;
-
-    public boolean hasReceivedMessage(String message) {
-      return message.equals(this.message);
-    }
-
-    public boolean hasRecipient(String recipient) {
-      return recipient.equals(this.recipient);
-    }
-
-    @Override
-    public void sendNotification(String recipient, String message) {
-      this.recipient = recipient;
-      this.message = message;
-    }
   }
 
   @Test

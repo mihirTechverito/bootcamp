@@ -1,12 +1,13 @@
 package com.techverito.dao;
 
-import com.techverito.business.PaymentOption;
+import com.techverito.business.PaymentMethod;
 import com.techverito.exception.BalanceInsufficientException;
 import com.techverito.service.Event;
+import com.techverito.service.EventData;
 import com.techverito.service.EventStore;
 import com.techverito.util.Currency;
 
-public class Wallet implements PaymentOption {
+public class Wallet implements PaymentMethod {
 
   private Money money;
 
@@ -20,15 +21,19 @@ public class Wallet implements PaymentOption {
 
   public void credit(Money creditMoney) {
     this.money = this.money.add(creditMoney);
-    EventStore.getInstance().publishEvent(Event.CREDIT, creditMoney);
+    EventStore.getInstance().publishEvent(Event.CREDIT, new EventData<>(creditMoney));
   }
 
   @Override
-  public boolean debit(Money debitMoney) {
-    if(this.money.compareTo(debitMoney) >= 0){
+  public boolean charge(Money debitMoney) {
+    return debit(debitMoney);
+  }
+
+  private boolean debit(Money debitMoney) {
+    try {
       this.money = this.money.deduct(debitMoney);
       return true;
-    }else{
+    } catch (Exception e) {
       throw new BalanceInsufficientException();
     }
   }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class EventStore {
 
-  private static final EnumMap<Event, List<CreditSubscriber>> subscribersMap =
+  private static final EnumMap<Event, List<Subscriber>> subscribersMap =
       new EnumMap<>(Event.class);
   private static EventStore instance;
 
@@ -20,20 +20,20 @@ public class EventStore {
     return instance;
   }
 
-  public void publishEvent(Event event, Money money) {
+  public void publishEvent(Event event, EventData<?> eventData) {
 
-    List<CreditSubscriber> subs = subscribersMap.get(event);
+    List<Subscriber> subs = subscribersMap.get(event);
 
-    if (subs != null) subs.forEach(s -> s.notifyEvent(money));
+    if (subs != null) subs.forEach(s -> s.notifyEvent(eventData));
   }
 
-  public void subscribe(Event event, CreditSubscriber creditSubscriber) {
-    List<CreditSubscriber> subscribers = subscribersMap.get(event);
+  public void subscribe(Event event, Subscriber subscriber) {
+    List<Subscriber> subscribers = subscribersMap.get(event);
     if (subscribers != null) {
-      subscribers.add(creditSubscriber);
+      subscribers.add(subscriber);
     } else {
-      List<CreditSubscriber> newSubscribers = new ArrayList<>();
-      newSubscribers.add(creditSubscriber);
+      List<Subscriber> newSubscribers = new ArrayList<>();
+      newSubscribers.add(subscriber);
       subscribersMap.put(event, newSubscribers);
     }
   }

@@ -1,8 +1,12 @@
 package com.techverito.business;
 
 import com.techverito.dao.Money;
-import com.techverito.dao.Wallet;
+import com.techverito.dao.User;
 import com.techverito.exception.ProductNotFoundInCartException;
+import com.techverito.service.Event;
+import com.techverito.service.EventData;
+import com.techverito.service.EventStore;
+import com.techverito.service.NotifierFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,8 +20,13 @@ public class Cart {
   public static final Comparator<CartItem> COSTLIER =
       Comparator.comparing(CartItem::price).reversed();
 
-
   private final List<CartItem> cartItems = new ArrayList<>();
+
+  private final User user;
+
+  public Cart(User user) {
+    this.user = user;
+  }
 
   public void addItem(CartItem cartItem) {
     this.cartItems.add(cartItem);
@@ -40,9 +49,12 @@ public class Cart {
     return this.cartItems;
   }
 
-  public void checkout(PaymentOption paymentOption) {
+  public void checkout(PaymentMethod paymentOption) {
     Money checkoutMoney = new Money(totalPrice(), INR);
-    if(paymentOption.debit(checkoutMoney)) cartItems.clear();
+    if (paymentOption.charge(checkoutMoney)){
+      cartItems.clear();
+      EventStore.getInstance().publishEvent(Event.CHECKOUT, new EventData<>(this.user));
+    }
   }
 
   public int size() {

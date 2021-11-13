@@ -3,17 +3,16 @@ package com.techverito;
 import com.techverito.dao.Money;
 import com.techverito.dao.Wallet;
 import com.techverito.exception.BalanceInsufficientException;
-import com.techverito.service.CreditSubscriber;
+import com.techverito.service.EventData;
+import com.techverito.service.Subscriber;
 import com.techverito.service.Event;
 import com.techverito.service.EventStore;
+import com.techverito.stubs.SubscriberStub;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import static com.techverito.util.Currency.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 class WalletTest {
 
@@ -141,19 +140,6 @@ class WalletTest {
     assertEquals(expected, wallet.balance());
   }
 
-//  @Test
-//  void sendCreditNotificationOnceWhen_1_INRAddedToEmptyINRWallet() {
-//    EventStore eventStore = EventStore.getInstance();
-//    MockedStatic<EventStore> eventStoreMockedStatic = mockStatic(EventStore.class);
-//
-//    Wallet wallet = new Wallet(INR);
-//    Money money = new Money(2, INR);
-//
-//    wallet.credit(money);
-//
-//    eventStoreMockedStatic.verify(EventStore.getInstance().publishEvent(Event.CREDIT,money),times(1));
-//    //verify(eventStoreMockedStatic, times(1)).publishEvent(Event.CREDIT, money);
-//  }
 
   @Test
   void sendCreditNotificationToSubscriber() {
@@ -161,38 +147,22 @@ class WalletTest {
     EventStore eventStore = EventStore.getInstance();
     Wallet wallet = new Wallet(INR);
     Money money = new Money(2, INR);
-    SubscriberStub auditorStub = new SubscriberStub(eventStore);
-    SubscriberStub accountStub = new SubscriberStub(eventStore);
+    SubscriberStub auditorStub = new SubscriberStub(eventStore, Event.CREDIT);
+    SubscriberStub accountStub = new SubscriberStub(eventStore, Event.CREDIT);
     wallet.credit(money);
 
 
-    assertEquals(money, auditorStub.money());
-    assertEquals(money, accountStub.money());
+    assertEquals(money, auditorStub.eventData().data());
+    assertEquals(money, accountStub.eventData().data());
   }
 
-  private class SubscriberStub implements CreditSubscriber {
-    private Money money;
-
-    public SubscriberStub(EventStore eventStore) {
-      eventStore.subscribe(Event.CREDIT, this);
-    }
-
-    public Money money() {
-      return money;
-    }
-
-    @Override
-    public void notifyEvent(Money money) {
-      this.money = money;
-    }
-  }
 
   @Test
   void deduct_1INR_FromINRWalletWith_10INR_TotalBalanceBecomes_9INR() {
     Wallet wallet = new Wallet(INR);
     wallet.credit(new Money(10, INR));
     Money expectedBalance = new Money(9,INR);
-    wallet.debit(new Money(1,INR));
+    wallet.charge(new Money(1,INR));
     Money actualBalance = wallet.balance();
     assertEquals(expectedBalance,actualBalance);
   }
@@ -202,7 +172,7 @@ class WalletTest {
     Wallet wallet = new Wallet(INR);
     wallet.credit(new Money(10, INR));
 
-    assertThrows(BalanceInsufficientException.class,() -> wallet.debit(new Money(11,INR)));
+    assertThrows(BalanceInsufficientException.class,() -> wallet.charge(new Money(11,INR)));
   }
 
   @Test
@@ -210,7 +180,7 @@ class WalletTest {
     Wallet wallet = new Wallet(USD);
     wallet.credit(new Money(4, USD));
     Money expectedBalance = new Money(2,USD);
-    wallet.debit(new Money(140,INR));
+    wallet.charge(new Money(140,INR));
     Money actualBalance = wallet.balance();
     assertEquals(expectedBalance,actualBalance);
 
