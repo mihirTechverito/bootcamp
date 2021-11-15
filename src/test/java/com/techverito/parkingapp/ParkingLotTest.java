@@ -3,6 +3,7 @@ package com.techverito.parkingapp;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ParkingLotTest {
 
@@ -32,8 +33,68 @@ class ParkingLotTest {
         assertFalse(parkingLot.park());
     }
 
-  @Test
-  void notifyWhenParkingLotInFull() {
 
-  }
+    @Test
+    void ownerShouldBeNotifiedWhenParkingLotIsFull() {
+        ParkingLotObserver owner = mock(ParkingLotObserver.class);
+        ParkingLot parkingLot = new ParkingLot(2);
+        parkingLot.addObserver(owner);
+
+        parkingLot.park();
+        parkingLot.park();
+
+        verify(owner, times(1)).onParkingFull();
+    }
+
+    @Test
+    void ownerShouldBeNotifiedOnlyOnceWhenParkingFull() {
+        ParkingLotObserver owner = mock(ParkingLotObserver.class);
+        ParkingLot parkingLot = new ParkingLot(2);
+        parkingLot.addObserver(owner);
+
+        parkingLot.park();
+        parkingLot.park();
+        parkingLot.park();
+
+        verify(owner, times(1)).onParkingFull();
+    }
+
+    @Test
+    void ownerShouldBeNotifiedOnlyOnceWhenParkingSpotBecomesFree() {
+        ParkingLotObserver owner = mock(ParkingLotObserver.class);
+        ParkingLot parkingLot = new ParkingLot(2);
+        parkingLot.addObserver(owner);
+
+        parkingLot.park();
+        parkingLot.park();
+        parkingLot.unpark();
+        parkingLot.unpark();
+
+        verify(owner, times(1)).onParkingAvailable();
+    }
+
+    @Test
+    void unparkingAlreadyParkedCarShouldBeSSuccessful() {
+        ParkingLot parkingLot = new ParkingLot(1);
+        parkingLot.addObserver(null);
+
+        parkingLot.park();
+
+        assertTrue(parkingLot.unpark());
+    }
+
+    @Test
+    void unparkingCarFromEmptyParkingLot() {
+        ParkingLot parkingLot = new ParkingLot(1);
+        parkingLot.addObserver(null);
+
+        parkingLot.park();
+        parkingLot.unpark();
+
+        assertFalse(parkingLot.unpark());
+    }
+
+
+
+
 }

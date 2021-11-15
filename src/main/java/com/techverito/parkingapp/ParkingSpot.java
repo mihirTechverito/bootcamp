@@ -16,4 +16,8 @@ public class ParkingSpot {
     public void park() {
         this.isEmpty = false;
     }
+
+    public void unpark() {
+        this.isEmpty = true;
+    }
 }
