@@ -10,35 +10,35 @@ import static org.mockito.Mockito.*;
 class AttendantTest {
 
   @Test
-  void directCarToParkingLotAndParkSuccessfully() {
+  void directCarWhenFreeSpotAvailableShouldBeSuccess() {
     ParkingLot parkingLot = new ParkingLot(1);
     Attendant attendant = new Attendant(List.of(parkingLot));
 
-    boolean isDirectedSuccessfully = attendant.parkingDirection(Attendant.NO_SORTING);
+    boolean isDirectedSuccessfully = attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
 
     assertTrue(isDirectedSuccessfully);
   }
 
   @Test
-  void directedCarShouldBeRejectedAsParkingLotFull() {
+  void directCarWhenNoSpotAvailableShouldFail() {
     ParkingLot parkingLot = new ParkingLot(1);
     Attendant attendant = new Attendant(List.of(parkingLot));
 
-    attendant.parkingDirection(Attendant.NO_SORTING);
-    boolean isDirectedFailure = attendant.parkingDirection(Attendant.NO_SORTING);
+    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    boolean isDirectedFailure = attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
 
     assertFalse(isDirectedFailure);
   }
 
   @Test
-  void directMultipleCarsToFreeParkingLotWhenMultipleLotsAreAvailable() {
+  void directCarsWhenLotsAreAvailable() {
     ParkingLot parkingLot1 = new ParkingLot(1);
     ParkingLot parkingLot2 = new ParkingLot(1);
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.NO_SORTING);
-    boolean isDirectedSuccessfully = attendant.parkingDirection(Attendant.NO_SORTING);
+    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    boolean isDirectedSuccessfully = attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
 
     assertTrue(isDirectedSuccessfully);
   }
@@ -51,8 +51,8 @@ class AttendantTest {
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.NO_SORTING);
-    attendant.parkingDirection(Attendant.NO_SORTING);
+    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
 
     verify(parkingLot1, times(2)).park();
   }

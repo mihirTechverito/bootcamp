@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class Attendant {
+public class Attendant implements ParkingManagementEmployee{
 
   private final List<ParkingLot> parkingLots = new ArrayList<>();
 
@@ -15,7 +15,7 @@ public class Attendant {
   public static final Comparator<ParkingLot> MAXIMUM_FILLED_SLOTS =
       (ParkingLot pl1, ParkingLot pl2) -> Long.compare(pl2.availableSpotCount(), pl1.availableSpotCount());
 
-  public static final Comparator<ParkingLot> NO_SORTING =
+  public static final Comparator<ParkingLot> ORIGINAL_ORDER =
           (ParkingLot pl1, ParkingLot pl2) -> 0;
 
   public Attendant(List<ParkingLot> parkingLots) {
@@ -41,12 +41,14 @@ public class Attendant {
     return directToFreeLot();
   }
 
-  public boolean assign(Comparator<ParkingLot> lotComparator) {
-    return parkingDirection(lotComparator);
+  @Override
+  public boolean assign() {
+    return parkingDirection(Attendant.ORIGINAL_ORDER);
   }
 
 
-  public boolean hasFreeSpots() {
+  @Override
+  public boolean confirmFreeSpotsAvailable() {
 
     return parkingLots.stream().anyMatch(ParkingLot::isAvailable);
   }
