@@ -43,7 +43,7 @@ class ParkingLotTest {
         parkingLot.park();
         parkingLot.park();
 
-        verify(owner, times(1)).onParkingFull();
+        verify(owner, times(1)).onParkingFull(parkingLot);
     }
 
     @Test
@@ -56,7 +56,7 @@ class ParkingLotTest {
         parkingLot.park();
         parkingLot.park();
 
-        verify(owner, times(1)).onParkingFull();
+        verify(owner, times(1)).onParkingFull(parkingLot);
     }
 
     @Test
@@ -70,7 +70,7 @@ class ParkingLotTest {
         parkingLot.unpark();
         parkingLot.unpark();
 
-        verify(owner, times(1)).onParkingAvailable();
+        verify(owner, times(1)).onParkingAvailable(parkingLot);
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.techverito.parkingapp;
 
 
-public interface ParkingManagementEmployee {
+public interface ParkingWorker {
 
     boolean assign();
     boolean confirmFreeSpotsAvailable();

@@ -14,7 +14,7 @@ class AttendantTest {
     ParkingLot parkingLot = new ParkingLot(1);
     Attendant attendant = new Attendant(List.of(parkingLot));
 
-    boolean isDirectedSuccessfully = attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    boolean isDirectedSuccessfully = attendant.direct(Attendant.ORIGINAL_ORDER);
 
     assertTrue(isDirectedSuccessfully);
   }
@@ -24,8 +24,8 @@ class AttendantTest {
     ParkingLot parkingLot = new ParkingLot(1);
     Attendant attendant = new Attendant(List.of(parkingLot));
 
-    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
-    boolean isDirectedFailure = attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    attendant.direct(Attendant.ORIGINAL_ORDER);
+    boolean isDirectedFailure = attendant.direct(Attendant.ORIGINAL_ORDER);
 
     assertFalse(isDirectedFailure);
   }
@@ -37,8 +37,8 @@ class AttendantTest {
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
-    boolean isDirectedSuccessfully = attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    attendant.direct(Attendant.ORIGINAL_ORDER);
+    boolean isDirectedSuccessfully = attendant.direct(Attendant.ORIGINAL_ORDER);
 
     assertTrue(isDirectedSuccessfully);
   }
@@ -51,8 +51,8 @@ class AttendantTest {
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
-    attendant.parkingDirection(Attendant.ORIGINAL_ORDER);
+    attendant.direct(Attendant.ORIGINAL_ORDER);
+    attendant.direct(Attendant.ORIGINAL_ORDER);
 
     verify(parkingLot1, times(2)).park();
   }
@@ -65,7 +65,7 @@ class AttendantTest {
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.MAXIMUM_FREE_SLOTS);
+    attendant.direct(Attendant.MAXIMUM_FREE_SLOTS);
 
     verify(parkingLot2, times(1)).park();
   }
@@ -78,7 +78,7 @@ class AttendantTest {
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.MAXIMUM_FILLED_SLOTS);
+    attendant.direct(Attendant.MAXIMUM_FILLED_SLOTS);
 
     verify(parkingLot1, times(1)).park();
   }
@@ -91,9 +91,9 @@ class AttendantTest {
 
     Attendant attendant = new Attendant(List.of(parkingLot1, parkingLot2));
 
-    attendant.parkingDirection(Attendant.MAXIMUM_FILLED_SLOTS);
-    attendant.parkingDirection(Attendant.MAXIMUM_FREE_SLOTS);
-    attendant.parkingDirection(Attendant.MAXIMUM_FREE_SLOTS);
-    assertFalse(attendant.parkingDirection(Attendant.MAXIMUM_FREE_SLOTS));
+    attendant.direct(Attendant.MAXIMUM_FILLED_SLOTS);
+    attendant.direct(Attendant.MAXIMUM_FREE_SLOTS);
+    attendant.direct(Attendant.MAXIMUM_FREE_SLOTS);
+    assertFalse(attendant.direct(Attendant.MAXIMUM_FREE_SLOTS));
   }
 }

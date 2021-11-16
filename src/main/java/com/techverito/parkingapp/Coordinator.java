@@ -1,23 +1,26 @@
 package com.techverito.parkingapp;
 
+import org.w3c.dom.Node;
+
+
 import java.util.List;
 import java.util.Optional;
 
-public class Coordinator implements ParkingManagementEmployee {
+public class Coordinator implements ParkingWorker {
 
-  private final List<ParkingManagementEmployee> employees;
+  private final List<ParkingWorker> workers;
 
-  public Coordinator(List<ParkingManagementEmployee> employees) {
-    this.employees = employees;
+  public Coordinator(List<ParkingWorker> workers) {
+    this.workers = workers;
   }
 
   public boolean assignEmployee() {
-    if (employees == null || employees.isEmpty()) return false;
-    Optional<ParkingManagementEmployee> optionalAttendant =
-        employees.stream().filter(ParkingManagementEmployee::confirmFreeSpotsAvailable).findFirst();
+    if (workers == null || workers.isEmpty()) return false;
+    Optional<ParkingWorker> parkingManagementEmployee =
+        workers.stream().filter(ParkingWorker::confirmFreeSpotsAvailable).findFirst();
 
-    if (optionalAttendant.isPresent()) {
-      return optionalAttendant.get().assign();
+    if (parkingManagementEmployee.isPresent()) {
+      return parkingManagementEmployee.get().assign();
     }
     return false;
   }
@@ -29,6 +32,6 @@ public class Coordinator implements ParkingManagementEmployee {
 
   @Override
   public boolean confirmFreeSpotsAvailable() {
-    return employees.stream().anyMatch(ParkingManagementEmployee::confirmFreeSpotsAvailable);
+    return workers.stream().anyMatch(ParkingWorker::confirmFreeSpotsAvailable);
   }
 }

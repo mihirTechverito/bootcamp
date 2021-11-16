@@ -12,7 +12,7 @@ public class ParkingLot {
 
   private List<ParkingSpot> parkingSpots = new ArrayList<>();
 
-  private ParkingLotObserver observer;
+  private List<ParkingLotObserver> observers = new ArrayList<>();
 
   public ParkingLot(int lotSize) {
     this.lotSize = lotSize;
@@ -20,11 +20,11 @@ public class ParkingLot {
   }
 
   private void notifyOnAvailableAgain() {
-    if(observer != null) observer.onParkingAvailable();
+    observers.forEach(parkingLotObserver -> parkingLotObserver.onParkingAvailable(this));
   }
 
   private void notifyObserver() {
-    if(observer != null) observer.onParkingFull();
+    observers.forEach(parkingLotObserver -> parkingLotObserver.onParkingFull(this));
   }
 
   private void createSpots() {
@@ -35,19 +35,20 @@ public class ParkingLot {
             .collect(Collectors.toList());
   }
 
-  public void addObserver(ParkingLotObserver owner) {
-    this.observer = owner;
+  public void addObserver(ParkingLotObserver observer) {
+    if (observer == null) return;
+    this.observers.add(observer);
   }
 
   public boolean unpark() {
     Optional<ParkingSpot> parkingSpotOptional =
-            parkingSpots.stream().filter(ps -> !ps.isEmpty()).findFirst();
+        parkingSpots.stream().filter(ps -> !ps.isEmpty()).findFirst();
 
-    if(parkingSpotOptional.isPresent()){
+    if (parkingSpotOptional.isPresent()) {
 
       parkingSpotOptional.get().unpark();
 
-      if(oneSpotFreed()){
+      if (oneSpotFreed()) {
         notifyOnAvailableAgain();
       }
       return true;
@@ -58,7 +59,7 @@ public class ParkingLot {
   public boolean park() {
 
     Optional<ParkingSpot> parkingSpotOptional =
-            parkingSpots.stream().filter(ParkingSpot::isEmpty).findFirst();
+        parkingSpots.stream().filter(ParkingSpot::isEmpty).findFirst();
 
     if (parkingSpotOptional.isPresent()) {
       parkingSpotOptional.get().park();
